@@ -1,30 +1,40 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include <utility>
+#include <iomanip>
 
 using namespace std;
 
+class Time {
+public:
+    int hour = 0;
+    int min = 0;
+    Time(int h, int m) {
+        hour = h;
+        min = m;
+    }
+};
+
 class person {
     public:
-        vector<pair<int, int>> busySchedule;
-        pair<int, int> workingPeriod;
-
+        vector<pair<Time*, Time*>> busySchedule;
+        pair<Time*, Time*> workingPeriod;
 };
 
 int getEarliestTimeToMeet(const vector<person*>& group) {
-    int earliestTime = group.at(0)->workingPeriod.first;
+    int earliestTime = group.at(0)->workingPeriod.first->hour;
     for (int i = 0; i < group.size(); i++) {
-        int beginWorkingPeriod = group.at(i)->workingPeriod.first;
+        int beginWorkingPeriod = group.at(i)->workingPeriod.first->hour;
         if (beginWorkingPeriod > earliestTime) {
             earliestTime = beginWorkingPeriod;
         }
     }
+    cout << "earliest time to meet" << earliestTime;
     return earliestTime;
 }
 
-pair<int,int> schedule(vector<person*>& group, int durration) {
-    pair<int, int> output;
+vector<pair<Time*, Time*>> schedule(vector<person*>& group, int durration) {
+    vector<pair<Time*,Time*>> output;
 
     int earliestTimeToMeet = getEarliestTimeToMeet(group);
 
@@ -42,15 +52,23 @@ int main() {
     group.push_back(p2);
     group.push_back(p3);
 
-    p1->workingPeriod.first = 7;
-    p1->workingPeriod.second = 18;
-    
-    p2->workingPeriod.first = 8;
-    p2->workingPeriod.second = 17;
-    
-    p3->workingPeriod.first = 6;
-    p3->workingPeriod.second = 16;
+    Time* p1t1 = new Time(7, 0);
+    Time* p1t2 = new Time(18, 0);
+    Time* p2t1 = new Time(8, 0);
+    Time* p2t2 = new Time(17, 0);
+    Time* p3t1 = new Time(6, 0);
+    Time* p3t2 = new Time(16, 0);
 
-    pair<int, int> available = schedule(group, 5);
+    p1->workingPeriod.first = p1t1;
+    p1->workingPeriod.second = p1t2;
+    
+    p2->workingPeriod.first = p2t1;
+    p2->workingPeriod.second = p2t2;
+    
+    p3->workingPeriod.first = p3t1;
+    p3->workingPeriod.second = p3t2;
 
+    
+
+    vector<pair<Time*, Time*>> available = schedule(group, 5);
 }
