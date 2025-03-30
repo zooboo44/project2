@@ -1,3 +1,4 @@
+//Christian Ziobro
 #include <vector>
 #include <string>
 #include <iostream>
@@ -21,6 +22,14 @@ class person {
         vector<pair<Time*, Time*>> busySchedule;
         pair<Time*, Time*> workingPeriod;
 };
+
+void printTimes(vector<pair<Time*, Time*>> output) {
+    for (int i = 0; i < output.size(); i++)
+    {
+        cout << output.at(i).first->hour << ":" << output.at(i).first->min << "-" << output.at(i).second->hour << ":" << output.at(i).second->min << "\t";
+    }
+}
+
 
 bool comp(pair<Time*, Time*> p1, pair<Time*, Time*> p2) {
     if (p1.first->totalTime == p2.first->totalTime) {
@@ -90,10 +99,16 @@ vector<pair<Time*, Time*>> schedule(vector<person*>& group, Time* durration) {
         }
     }
 
+    cout << "Unavailable times: ";
     sort(unavailabilities.begin(), unavailabilities.end(), comp);
+    printTimes(unavailabilities);
+    cout << endl;
 
     int i = 0;
     int j = 1;
+    if (earliestTimeToMeet->totalTime < unavailabilities.at(0).first->totalTime) {
+        output.push_back({ earliestTimeToMeet,unavailabilities.at(0).first });
+    }
     while (j != unavailabilities.size()) {
         if (withinWorkingHours(unavailabilities.at(i), workingHours) && getAvailableStartTime(unavailabilities.at(i).second, unavailabilities.at(j).first, durration)) {
             output.push_back({ unavailabilities.at(i).second, unavailabilities.at(j).first });
@@ -119,9 +134,9 @@ int main() {
     group.push_back(p1);
     group.push_back(p2);
 
-    Time* p1t1 = new Time(9, 0);
+    Time* p1t1 = new Time(6, 0);
     Time* p1t2 = new Time(19, 0);
-    Time* p2t1 = new Time(9, 0);
+    Time* p2t1 = new Time(6, 0);
     Time* p2t2 = new Time(18, 30);
 
     p1->workingPeriod.first = p1t1;
@@ -161,4 +176,6 @@ int main() {
 
     Time* durration = new Time(0,30);
     vector<pair<Time*, Time*>> available = schedule(group, durration);
+    cout << "Available times: ";
+    printTimes(available);
 }
