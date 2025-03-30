@@ -26,7 +26,7 @@ class person {
 void printTimes(vector<pair<Time*, Time*>> output) {
     for (int i = 0; i < output.size(); i++)
     {
-        cout << output.at(i).first->hour << ":" << output.at(i).first->min << "-" << output.at(i).second->hour << ":" << output.at(i).second->min << "\t";
+        cout << setfill('0') << setw(2) << output.at(i).first->hour << ":" << setfill('0') << setw(2) << output.at(i).first->min << "-" << setfill('0') << setw(2) << output.at(i).second->hour << ":" << setfill('0') << setw(2) << output.at(i).second->min << "\t";
     }
 }
 
