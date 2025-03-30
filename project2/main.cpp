@@ -12,15 +12,15 @@ public:
     int hour = 0;
     int min = 0;
     int totalTime = hour * 60 + min;
-    Time(int h, int m) : hour(h), min(m){}
-    Time(){}
+    Time(int h, int m) : hour(h), min(m) {}
+    Time() {}
 
 };
 
 class person {
-    public:
-        vector<pair<Time*, Time*>> busySchedule;
-        pair<Time*, Time*> workingPeriod;
+public:
+    vector<pair<Time*, Time*>> busySchedule;
+    pair<Time*, Time*> workingPeriod;
 };
 
 void printTimes(vector<pair<Time*, Time*>> output) {
@@ -38,7 +38,7 @@ bool comp(pair<Time*, Time*> p1, pair<Time*, Time*> p2) {
     return p1.first->totalTime < p2.first->totalTime;
 }
 
-bool withinWorkingHours(pair<Time* ,Time*> event, pair<Time*, Time*> workingHours) {
+bool withinWorkingHours(pair<Time*, Time*> event, pair<Time*, Time*> workingHours) {
     if ((event.first->totalTime >= workingHours.first->totalTime) && (event.second->totalTime <= workingHours.second->totalTime)) {
         return true;
     }
@@ -80,7 +80,7 @@ Time* getEarliestLatestTime(const vector<person*>& group) {
 }
 
 vector<pair<Time*, Time*>> schedule(vector<person*>& group, Time* durration) {
-    vector<pair<Time*,Time*>> output;
+    vector<pair<Time*, Time*>> output;
 
     Time* earliestTimeToMeet = new Time();
     Time* earliestLatestTime = new Time();
@@ -118,7 +118,7 @@ vector<pair<Time*, Time*>> schedule(vector<person*>& group, Time* durration) {
     }
 
     if ((unavailabilities.at(unavailabilities.size() - 1).second->totalTime < earliestLatestTime->totalTime) && (earliestLatestTime->totalTime - unavailabilities.at(unavailabilities.size() - 1).second->totalTime)) {
-        output.push_back({ unavailabilities.at(unavailabilities.size()-1).second, workingHours.second });
+        output.push_back({ unavailabilities.at(unavailabilities.size() - 1).second, workingHours.second });
     }
 
 
@@ -127,54 +127,47 @@ vector<pair<Time*, Time*>> schedule(vector<person*>& group, Time* durration) {
 
 int main() {
     vector<person*> group;
-    
-    person* p1 = new person;
-    person* p2 = new person;
+    int groupSize;
+    int startHour, startMin, endHour, endMin, durrationHour, durrationMin;
 
-    group.push_back(p1);
-    group.push_back(p2);
+    cout << "Enter number of group members: ";
+    cin >> groupSize;
 
-    Time* p1t1 = new Time(6, 0);
-    Time* p1t2 = new Time(19, 0);
-    Time* p2t1 = new Time(6, 0);
-    Time* p2t2 = new Time(18, 30);
+    cout << "Enter durration of event: " << endl;
+    cout << "HH: "; cin >> durrationHour;
+    cout << "MM: "; cin >> durrationMin;
+    Time* durration = new Time(durrationHour, durrationMin);
+    cout << endl;
 
-    p1->workingPeriod.first = p1t1;
-    p1->workingPeriod.second = p1t2;
-    
-    p2->workingPeriod.first = p2t1;
-    p2->workingPeriod.second = p2t2;
+    for (int i = 0; i < groupSize; i++) {
+        person* p1 = new person;
+        cout << "\nPerson #" << i + 1 << endl;
+        cout << "Enter work hours for person " << i + 1 << " (HH:MM) : " << endl;
+        cout << "Start HH: ";  cin >> startHour;
+        cout << "Start MM: "; cin >> startMin;
+        cout << "End HH: ";  cin >> endHour;
+        cout << "End MM: "; cin >> endMin;
+        Time* startWork = new Time(startHour, startMin);
+        Time* endWork = new Time(endHour, endMin);
+        p1->workingPeriod.first = startWork;
+        p1->workingPeriod.second = endWork;
 
-    Time* p1b1S = new Time(7,0);
-    Time* p1b1E = new Time(8,30);
+        int schedule = 0;
+        while (schedule != -1) {
+            cout << "\nEnter busy times: " << endl;
+            cout << "Start HH: "; cin >> startHour;
+            cout << "Start MM: "; cin >> startMin;
+            cout << "End HH: "; cin >> endHour;
+            cout << "End MM: "; cin >> endMin;
+            Time* start = new Time(startHour, startMin);
+            Time* end = new Time(endHour, endMin);
+            p1->busySchedule.push_back(make_pair(start, end));
+            cout << "Add another entry? (-1 to exit): ";
+            cin >> schedule;
+        }
+        group.push_back(p1);
+    }
 
-    Time* p1b2S = new Time(12,0);
-    Time* p1b2E = new Time(13, 0);
-
-    Time* p1b3S = new Time(16, 0);
-    Time* p1b3E = new Time(18, 0);
-    
-    Time* p2b1S = new Time(9, 0);
-    Time* p2b1E = new Time(10, 30);
-    
-    Time* p2b2S = new Time(12, 20);
-    Time* p2b2E = new Time(13, 30);
-    
-    Time* p2b3S = new Time(14, 0);
-    Time* p2b3E = new Time(15, 0);
-    
-    Time* p2b4S = new Time(16, 0);
-    Time* p2b4E = new Time(17, 0);
-    
-    p1->busySchedule.push_back({ p1b1S,p1b1E });
-    p1->busySchedule.push_back({ p1b2S,p1b2E });
-    p1->busySchedule.push_back({ p1b3S,p1b3E });
-    p2->busySchedule.push_back({ p2b1S,p2b1E });
-    p2->busySchedule.push_back({ p2b2S,p2b2E });
-    p2->busySchedule.push_back({ p2b3S,p2b3E });
-    p2->busySchedule.push_back({ p2b4S,p2b4E });
-
-    Time* durration = new Time(0,30);
     vector<pair<Time*, Time*>> available = schedule(group, durration);
     cout << "Available times: ";
     printTimes(available);
